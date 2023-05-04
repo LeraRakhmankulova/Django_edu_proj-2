@@ -11,6 +11,7 @@ class Product(models.Model):
     protein_count = models.PositiveIntegerField()
     carbohydrates_count = models.PositiveIntegerField()
     calories_count = models.PositiveIntegerField()
+    image = models.ImageField(upload_to='products/', null=True, blank=True)
 
 
 class Meal(models.Model):
