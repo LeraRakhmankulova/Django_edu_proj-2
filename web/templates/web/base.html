@@ -6,7 +6,6 @@
 <body>
      <a href="{% url 'main' %}"><h1>Food calculate</h1></a>
     <nav>
-        <a href="{% url 'main' %}">Главная страница</a>
        {% if user.is_anonymous %}
             <a href="{% url 'registration' %}">Регистрация</a>
             <a href="{% url 'auth' %}">Авторизация</a>
