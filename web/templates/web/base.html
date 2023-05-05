@@ -3,7 +3,10 @@
 <head>
     <title>Food calculate</title>
 </head>
-<body>
+<style>
+    a {padding: 0 10px}
+</style>
+<body style="margin: 0.5rem 1rem">
 <a href="{% url 'main' %}"><h1>Food calculate</h1></a>
 <nav>
     {% if user.is_anonymous %}
@@ -11,7 +14,8 @@
         <a href="{% url 'registration' %}">Регистрация</a>
         <a href="{% url 'auth' %}">Авторизация</a>
     </div>
-    <a href="{% url 'product_add' %}">Добавить продукт</a>
+    <a href="{% url 'product_add' %}">Добавить новый продукт</a>
+    <a href="{% url 'meal_add' %}">Добавить новый прием пищи</a>
     {% else %}
     <a href="{% url 'logout' %}">Выход</a>
     {% endif %}

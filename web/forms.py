@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
-from web.models import Product
+from web.models import Product, Meal
 
 User = get_user_model()
 
@@ -27,7 +27,21 @@ class AuthForm(forms.Form):
 
 
 class ProductCreateForm(forms.ModelForm):
+    def save(self, commit=True):
+        self.instance.user = self.initial['user']
+        return super().save(commit)
+
     class Meta:
         model: Product
-        fields = ('name', 'weight', 'fats_count', 'protein_count', 'carbohydrates_count', 'calories_count', 'image')
+        fields = (
+        'name', 'weight', 'fats_count', 'protein_count', 'carbohydrates_count', 'calories_count', 'image', 'user')
 
+
+class MealsCreateForm(forms.ModelForm):
+    def save(self, commit=True):
+        self.instance.user = self.initial['user']
+        return super().save(commit)
+
+    class Meta:
+        model: Meal
+        fields = ('time', 'name', 'user', 'products')
