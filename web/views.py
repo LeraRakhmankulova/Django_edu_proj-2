@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.shortcuts import render, redirect
 
-from web.forms import RegistrationForm, AuthForm, ProductCreateForm
-from web.models import Product
+from web.forms import RegistrationForm, AuthForm, ProductCreateForm, MealsCreateForm
+from web.models import Product, Meal
 
 User = get_user_model()
 
@@ -62,3 +62,16 @@ def product_edit_view(request, id=None):
             form.save()
             return redirect("main")
     return render(request, "web/product_form.html", {"form": form})
+
+
+def meals_edit_view(request, id=None):
+    meal = None
+    if id is None:
+        meal = Meal.objects.get(id=id)
+    form = MealsCreateForm(instance=meal)
+    if request.method == 'POST':
+        form = MealsCreateForm(data=request.POST, instance=meal)
+        if form.is_valid():
+            form.save()
+            return redirect("main")
+    return render(request, "web/meal_form.html", {"form": form})

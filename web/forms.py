@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
-from web.models import Product
+from web.models import Product, Meal
 
 User = get_user_model()
 
@@ -30,4 +30,10 @@ class ProductCreateForm(forms.ModelForm):
     class Meta:
         model: Product
         fields = ('name', 'weight', 'fats_count', 'protein_count', 'carbohydrates_count', 'calories_count', 'image')
+
+
+class MealsCreateForm(forms.ModelForm):
+    class Meta:
+        model: Meal
+        fields = ('time', 'name',)
 

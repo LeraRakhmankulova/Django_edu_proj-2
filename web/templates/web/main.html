@@ -1,18 +1,33 @@
 {% extends 'web/base.html' %}
 {% block content %}
 
-<h3>Недавние продукты:</h3>
-<ul>
-    {% for product in products %}
-    <li>
-        <b>{{ product.name }}</b>
-        <span>{{ product.protein_count }}</span>
-        <span>{{ product.fats_count }}</span>
-        <span>{{ product.carbohydrates_count }}</span>
-        <b>{{ product.calories_count }}</b>
-        <a href="{% url 'product_edit' product.id %}">Изменить</a>
-    </li>
-    {% endfor %}
-</ul>
+<div style="display: flex; width: 60%; justify-content: space-between">
+    <div>
+        <h3>Недавние добавленные продукты:</h3>
+        <ul>
+            {% for product in products %}
+            <li>
+                <b>{{ product.name }}</b>
+                <span>{{ product.protein_count }}</span>
+                <span>{{ product.fats_count }}</span>
+                <span>{{ product.carbohydrates_count }}</span>
+                <b>{{ product.calories_count }}</b>
+                <a href="{% url 'product_edit' product.id %}">Изменить</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <h3>Недавние приемы пищи:</h3>
+        <ul>
+            {% for meal in meals %}
+            <li>
+                <b>{{ meal.time }}</b>
+                <span>{{ meal.name }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
 
 {% endblock %}
