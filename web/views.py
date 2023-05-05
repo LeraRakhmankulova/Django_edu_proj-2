@@ -57,9 +57,8 @@ def product_edit_view(request, id=None):
         product = Product.objects.get(id=id)
     form = ProductCreateForm(instance=product)
     if request.method == 'POST':
-        form = ProductCreateForm(data=request.POST, instance=product)
+        form = ProductCreateForm(data=request.POST, files=request.FILES, instance=product)
         if form.is_valid():
             form.save()
             return redirect("main")
     return render(request, "web/product_form.html", {"form": form})
-
