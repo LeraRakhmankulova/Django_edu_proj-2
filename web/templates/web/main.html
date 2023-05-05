@@ -1,8 +1,18 @@
 {% extends 'web/base.html' %}
 {% block content %}
 
-    {% if not user.is_anonymous %}
-    <p>Вы авторизованы как <b>{{ user.username }}</b></p>
-    {% endif %}
+<h3>Недавние продукты:</h3>
+<ul>
+    {% for product in products %}
+    <li>
+        <b>{{ product.name }}</b>
+        <span>{{ product.protein_count }}</span>
+        <span>{{ product.fats_count }}</span>
+        <span>{{ product.carbohydrates_count }}</span>
+        <b>{{ product.calories_count }}</b>
+        <a href="{% url 'product_edit' product.id %}">Изменить</a>
+    </li>
+    {% endfor %}
+</ul>
 
 {% endblock %}

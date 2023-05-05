@@ -1,0 +1,11 @@
+{% extends 'web/base.html' %}
+{% block content %}
+
+    <h2>Добавить новый продукт:</h2>
+     <form action="" method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button>Добавить</button>
+    </form>
+
+{% endblock %}
