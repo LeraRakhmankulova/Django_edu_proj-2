@@ -13,6 +13,7 @@
                 <span>{{ product.carbohydrates_count }}</span>
                 <b>{{ product.calories_count }}</b>
                 <a href="{% url 'product_edit' product.id %}">Изменить</a>
+                <small><a href="{% url 'product_delete' product.id %}">Удалить</a></small>
             </li>
             {% endfor %}
         </ul>
@@ -24,6 +25,7 @@
             <li>
                 <b>{{ meal.time }}</b>
                 <span>{{ meal.name }}</span>
+                <small><a href="{% url 'meal_delete' meal.id %}">Удалить</a></small>
             </li>
             {% endfor %}
         </ul>

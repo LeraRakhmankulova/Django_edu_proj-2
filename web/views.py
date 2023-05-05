@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model, authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
 
 from web.forms import RegistrationForm, AuthForm, ProductCreateForm, MealsCreateForm
 from web.models import Product, Meal
@@ -7,10 +8,13 @@ from web.models import Product, Meal
 User = get_user_model()
 
 
+@login_required
 def main_view(request):
-    products = Product.objects.all()
+    products = Product.objects.filter(user=request.user)
+    meals = Meal.objects.filter(user=request.user)
     return render(request, "web/main.html", {
-        'products': products
+        'products': products,
+        'meals': meals,
     })
 
 
@@ -51,27 +55,49 @@ def logout_view(request):
     return redirect("main")
 
 
+@login_required
+def _list_editor_view(request, model_cls, form_cls, template_name, url_name):
+    items = model_cls.objects.filter(user=request.user)
+    form = form_cls()
+    if request.method == 'POST':
+        form = form_cls(data=request.POST, initial={"user": request.user})
+        if form.is_valid():
+            form.save()
+            return redirect(url_name)
+    return render(request, f"web/{template_name}.html", {"items": items, "form": form})
+
+
+@login_required
 def product_edit_view(request, id=None):
     product = None
     if id is None:
         product = Product.objects.get(id=id)
     form = ProductCreateForm(instance=product)
     if request.method == 'POST':
-        form = ProductCreateForm(data=request.POST, files=request.FILES, instance=product)
+        product = get_object_or_404(Product, user=request.user, id=id)
+        form = ProductCreateForm(data=request.POST, initial={"user": request.user}, files=request.FILES,
+                                 instance=product)
         if form.is_valid():
             form.save()
             return redirect("main")
     return render(request, "web/product_form.html", {"form": form})
 
 
+@login_required
+def product_delete_view(requset, id):
+    product = Product.objects.get(id=id)
+    product.delete()
+    return redirect('main')
+
+
+@login_required
 def meals_edit_view(request, id=None):
-    meal = None
-    if id is None:
-        meal = Meal.objects.get(id=id)
-    form = MealsCreateForm(instance=meal)
-    if request.method == 'POST':
-        form = MealsCreateForm(data=request.POST, instance=meal)
-        if form.is_valid():
-            form.save()
-            return redirect("main")
-    return render(request, "web/meal_form.html", {"form": form})
+    meal = get_object_or_404(Meal, user=request.user, id=id)
+    return _list_editor_view(request, Meal, MealsCreateForm, "main", "meal_form")
+
+
+@login_required
+def meal_delete_view(requset, id):
+    meal = Meal.objects.get(id=id)
+    meal.delete()
+    return redirect('main')
