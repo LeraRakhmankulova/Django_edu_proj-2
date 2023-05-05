@@ -4,17 +4,26 @@
     <title>Food calculate</title>
 </head>
 <body>
-     <a href="{% url 'main' %}"><h1>Food calculate</h1></a>
-    <nav>
-       {% if user.is_anonymous %}
-            <a href="{% url 'registration' %}">Регистрация</a>
-            <a href="{% url 'auth' %}">Авторизация</a>
-        {% else %}
-            <a href="{% url 'logout' %}">Выход</a>
-        {% endif %}
-    </nav>
-     <hr/>
+<a href="{% url 'main' %}"><h1>Food calculate</h1></a>
+<nav>
+    {% if user.is_anonymous %}
+    <div style="text-align: right">
+        <a href="{% url 'registration' %}">Регистрация</a>
+        <a href="{% url 'auth' %}">Авторизация</a>
+    </div>
+    <a href="{% url 'product_add' %}">Добавить продукт</a>
+    {% else %}
+    <a href="{% url 'logout' %}">Выход</a>
+    {% endif %}
+    <div style="text-align: right">
+        {% if not user.is_anonymous %}
+        <p>Вы авторизованы как <b>{{ user.username }}</b></p>
+    </div>
+    {% endif %}
 
-    {% block content %}{% endblock %}
+</nav>
+<hr/>
+
+{% block content %}{% endblock %}
 </body>
 </html>

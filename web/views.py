@@ -1,15 +1,17 @@
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.shortcuts import render, redirect
 
-from web.forms import RegistrationForm, AuthForm
-
-# from web.forms import RegistrationForm, AuthForm
+from web.forms import RegistrationForm, AuthForm, ProductCreateForm
+from web.models import Product
 
 User = get_user_model()
 
 
 def main_view(request):
-    return render(request, "web/main.html")
+    products = Product.objects.all()
+    return render(request, "web/main.html", {
+        'products': products
+    })
 
 
 def registration_view(request):
@@ -47,3 +49,17 @@ def auth_view(request):
 def logout_view(request):
     logout(request)
     return redirect("main")
+
+
+def product_edit_view(request, id=None):
+    product = None
+    if id is None:
+        product = Product.objects.get(id=id)
+    form = ProductCreateForm(instance=product)
+    if request.method == 'POST':
+        form = ProductCreateForm(data=request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect("main")
+    return render(request, "web/product_form.html", {"form": form})
+
