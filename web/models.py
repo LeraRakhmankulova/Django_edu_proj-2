@@ -5,25 +5,25 @@ User = get_user_model()
 
 
 class Product(models.Model):
-    name = models.CharField(max_length=256)
-    weight = models.PositiveIntegerField()
-    fats_count = models.PositiveIntegerField()
-    protein_count = models.PositiveIntegerField()
-    carbohydrates_count = models.PositiveIntegerField()
-    calories_count = models.PositiveIntegerField()
-    image = models.ImageField(upload_to='products/', null=True, blank=True)
+    name = models.CharField(max_length=256, verbose_name="Название")
+    weight = models.PositiveIntegerField(verbose_name="Вес")
+    fats_count = models.PositiveIntegerField(verbose_name="Количество жиров")
+    protein_count = models.PositiveIntegerField(verbose_name="Количество белков")
+    carbohydrates_count = models.PositiveIntegerField(verbose_name="Количество углеводов")
+    calories_count = models.PositiveIntegerField(verbose_name="Количество калорий")
+    image = models.ImageField(upload_to='products/', null=True, blank=True, verbose_name="Картинка")
 
 
 class Meal(models.Model):
-    time = models.TimeField()
-    name = models.CharField(max_length=256)
-    products = models.ManyToManyField(Product)
+    time = models.TimeField(verbose_name="Время")
+    name = models.CharField(max_length=256, verbose_name="Название")
+    products = models.ManyToManyField(Product, verbose_name="Продукты")
 
 
 class CaloriesLog(models.Model):
-    date = models.DateTimeField()
-    meals = models.ForeignKey(Meal, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(verbose_name="Дата")
+    meals = models.ForeignKey(Meal, on_delete=models.CASCADE, verbose_name="Прием пищи")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
 
 
 
