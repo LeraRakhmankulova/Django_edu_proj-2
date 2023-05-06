@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'foodcalculate.middlewares.SqlPrintingMiddleware'
 ]
 
 ROOT_URLCONF = 'foodcalculate.urls'
