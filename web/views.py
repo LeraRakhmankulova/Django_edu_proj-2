@@ -26,8 +26,9 @@ def main_view(request):
     if filters['end_date']:
         meals = meals.filter(date__lte=filters['end_date'])
 
+    meals = meals.prefetch_related("products").select_related("user")
     total_count = meals.count()
-    paginator = Paginator(meals, per_page=10)
+    paginator = Paginator(meals, per_page=100)
 
     return render(request, "web/main.html", {
         'meals': paginator.get_page(page),
