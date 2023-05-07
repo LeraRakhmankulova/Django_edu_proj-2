@@ -20,6 +20,11 @@
             <li>
                 <b>{{ meal.date }}</b>
                 <span>{{ meal.name }}</span>
+                <small>
+                    {% if meal.products.all %}
+                        [{% for products in meal.products.all %} {{ products.name }} {% endfor %}]
+                    {% endif %}
+                </small>
                 <small><a href="{% url 'meal_delete' meal.id %}">Удалить</a></small>
             </li>
         {% endfor %}
