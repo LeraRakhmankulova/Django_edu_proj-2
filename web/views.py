@@ -20,6 +20,12 @@ def main_view(request):
     if filters['search']:
         meals = meals.filter(title_icontains=filters['search'])
 
+    if filters['start_date']:
+        meals = meals.filter(date__gre=filters['start_date'])
+
+    if filters['end_date']:
+        meals = meals.filter(date__lte=filters['end_date'])
+
     total_count = meals.count()
     paginator = Paginator(meals, per_page=10)
 

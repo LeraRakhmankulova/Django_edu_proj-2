@@ -34,7 +34,7 @@ class ProductCreateForm(forms.ModelForm):
     class Meta:
         model: Product
         fields = (
-        'name', 'weight', 'fats_count', 'protein_count', 'carbohydrates_count', 'calories_count', 'image', 'user')
+            'name', 'weight', 'fats_count', 'protein_count', 'carbohydrates_count', 'calories_count', 'image', 'user')
 
 
 class MealsCreateForm(forms.ModelForm):
@@ -44,10 +44,25 @@ class MealsCreateForm(forms.ModelForm):
 
     class Meta:
         model: Meal
-        fields = ('time', 'name', 'user', 'products')
+        fields = ('date', 'name', 'user', 'products')
+        widgets = {
+            "date": forms.DateTimeInput(attrs={"type": "date"}, format='%Y-%m-%d')
+        }
 
 
 class MealFilterForm(forms.Form):
     search = forms.CharField(label='', widget=forms.TextInput(attrs={"placeholder": "Поиск"}), required=False)
-
-
+    start_date = forms.DateTimeField(
+        label="От",
+        widget=forms.DateTimeInput(
+            attrs={"type": "datetime-local"}, format='%Y-%m-%dT%H:%M'
+        ),
+        required=False
+    )
+    end_date = forms.DateTimeField(
+        label="до",
+        widget=forms.DateTimeInput(
+            attrs={"type": "datetime-local"}, format='%Y-%m-%dT%H:%M'
+        ),
+        required=False
+    )
