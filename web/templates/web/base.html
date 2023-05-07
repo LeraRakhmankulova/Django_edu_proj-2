@@ -5,10 +5,11 @@
 </head>
 <style>
     a {
-        padding: 0 10px
+        padding: 0 10px;
+        color: #0f0f0f;
     }
 </style>
-<body style="margin: 0.5rem 1rem">
+<body style="margin: 0.5rem 1rem; background: #ffdcb0">
 <a href="{% url 'main' %}"><h1>Food calculate</h1></a>
 <nav>
     {% if user.is_anonymous %}
