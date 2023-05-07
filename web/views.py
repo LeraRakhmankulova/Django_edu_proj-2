@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Count, Max, Min
+from django.db.models.functions import TruncDate
 from django.shortcuts import render, redirect, get_object_or_404
 
 from web.forms import RegistrationForm, AuthForm, ProductCreateForm, MealsCreateForm, MealFilterForm
@@ -26,13 +28,39 @@ def main_view(request):
     if filters['end_date']:
         meals = meals.filter(date__lte=filters['end_date'])
 
-    meals = meals.prefetch_related("products").select_related("user")
+    meals = meals.prefetch_related("products").select_related("user").annotate(
+        product_count=Count("products")
+    )
     total_count = meals.count()
     paginator = Paginator(meals, per_page=100)
 
     return render(request, "web/main.html", {
         'meals': paginator.get_page(page),
         'total_count': total_count
+    })
+
+
+@login_required
+def analytics_view(request):
+    overall_stat = Meal.objects.aggregate(
+        count=Count("id"),
+        max_date=Max("date"),
+        min_date=Min("date")
+    )
+
+    days_stat = (
+        Meal.objects.exclude(date__isnull=True)
+        .annotate(date=TruncDate("date"))
+        .values("date")
+        .annotate(
+            count=Count("id")
+        )
+        .order_by('-date')
+    )
+
+    return render(request, "web/analytics.html", {
+        "overall_stat": overall_stat,
+        'days_stat': days_stat
     })
 
 
