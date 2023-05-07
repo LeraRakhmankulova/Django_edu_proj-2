@@ -1,11 +1,31 @@
 {% extends 'web/base.html' %}
 {% block content %}
 
-<h2>Добавить новый продукт:</h2>
-<form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{form.as_p}}
-    <button>Добавить</button>
-</form>
+    <div style="display: flex; width: 60%; justify-content: space-between">
+        <div>
+            <h2>Добавить новый продукт:</h2>
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button>Добавить</button>
+            </form>
+        </div>
+        <div>
+            <h3>Недавно употребленные продукты:</h3>
+            <ul>
+                {% for product in products %}
+                    <li>
+                        <b>{{ product.name }}</b>
+                        <span>{{ product.protein_count }}</span>
+                        <span>{{ product.fats_count }}</span>
+                        <span>{{ product.carbohydrates_count }}</span>
+                        <b>{{ product.calories_count }}</b>
+                        <a href="{% url 'product_edit' product.id %}">Изменить</a>
+                        <small><a href="{% url 'product_delete' product.id %}">Удалить</a></small>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 
 {% endblock %}

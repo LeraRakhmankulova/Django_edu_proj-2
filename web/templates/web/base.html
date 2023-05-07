@@ -4,26 +4,28 @@
     <title>Food calculate</title>
 </head>
 <style>
-    a {padding: 0 10px}
+    a {
+        padding: 0 10px
+    }
 </style>
 <body style="margin: 0.5rem 1rem">
 <a href="{% url 'main' %}"><h1>Food calculate</h1></a>
 <nav>
     {% if user.is_anonymous %}
-    <div style="text-align: right">
-        <a href="{% url 'registration' %}">Регистрация</a>
-        <a href="{% url 'auth' %}">Авторизация</a>
-    </div>
-    <a href="{% url 'product_add' %}">Добавить новый продукт</a>
-    <a href="{% url 'meal_add' %}">Добавить новый прием пищи</a>
+        <div style="text-align: right">
+            <a href="{% url 'registration' %}">Регистрация</a>
+            <a href="{% url 'auth' %}">Авторизация</a>
+        </div>
+        <a href="{% url 'product_add' %}">Добавить новый продукт</a>
+        <a href="{% url 'meal_add' %}">Добавить новый прием пищи</a>
     {% else %}
-    <a href="{% url 'logout' %}">Выход</a>
+        <a href="{% url 'logout' %}">Выход</a>
     {% endif %}
     <div style="text-align: right">
         {% if not user.is_anonymous %}
-        <p>Вы авторизованы как <b>{{ user.username }}</b></p>
-    </div>
-    {% endif %}
+            <p>Вы авторизованы как <b>{{ user.username }}</b></p>
+            </div>
+        {% endif %}
 
 </nav>
 <hr/>
