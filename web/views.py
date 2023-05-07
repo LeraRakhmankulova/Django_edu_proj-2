@@ -3,10 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Count, Max, Min
 from django.db.models.functions import TruncDate
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
-from web.forms import RegistrationForm, AuthForm, ProductCreateForm, MealsCreateForm, MealFilterForm
+from web.forms import RegistrationForm, AuthForm, ProductCreateForm, MealsCreateForm, MealFilterForm, ImportForm
 from web.models import Product, Meal
+from web.services import filter_meals, export_meals_csv, import_meals_from_csv
 
 User = get_user_model()
 
@@ -18,15 +20,7 @@ def main_view(request):
 
     filter_form = MealFilterForm(request.GET)
     filter_form.is_valid()
-    filters = filter_form.cleaned_data
-    if filters['search']:
-        meals = meals.filter(title_icontains=filters['search'])
-
-    if filters['start_date']:
-        meals = meals.filter(date__gre=filters['start_date'])
-
-    if filters['end_date']:
-        meals = meals.filter(date__lte=filters['end_date'])
+    meals = filter_meals(meals, filter_form.cleaned_data)
 
     meals = meals.prefetch_related("products").select_related("user").annotate(
         product_count=Count("products")
@@ -34,9 +28,28 @@ def main_view(request):
     total_count = meals.count()
     paginator = Paginator(meals, per_page=100)
 
+    if request.GET.get("export") == 'csv':
+        response = HttpResponse(
+            content_type='text/csv',
+            headers={"Content-Disposition": "attachment; filename=meals.csv"}
+        )
+        export_meals_csv(meals, response)
+
     return render(request, "web/main.html", {
         'meals': paginator.get_page(page),
         'total_count': total_count
+    })
+
+
+@login_required
+def import_view(request):
+    if request.method == 'POST':
+        form = ImportForm(files=request.FILES)
+        if form.is_valid():
+            import_meals_from_csv(form.cleaned_data['file'], request.user.id)
+            return redirect("main")
+    return render(request, "web/import.html", {
+        "form": ImportForm()
     })
 
 
