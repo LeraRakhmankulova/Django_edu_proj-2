@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model, authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.shortcuts import render, redirect, get_object_or_404
 
-from web.forms import RegistrationForm, AuthForm, ProductCreateForm, MealsCreateForm
+from web.forms import RegistrationForm, AuthForm, ProductCreateForm, MealsCreateForm, MealFilterForm
 from web.models import Product, Meal
 
 User = get_user_model()
@@ -10,11 +11,21 @@ User = get_user_model()
 
 @login_required
 def main_view(request):
-    products = Product.objects.filter(user=request.user)
     meals = Meal.objects.filter(user=request.user)
+    page = request.GET.get("page", 10)
+
+    filter_form = MealFilterForm(request.GET)
+    filter_form.is_valid()
+    filters = filter_form.cleaned_data
+    if filters['search']:
+        meals = meals.filter(title_icontains=filters['search'])
+
+    total_count = meals.count()
+    paginator = Paginator(meals, per_page=10)
+
     return render(request, "web/main.html", {
-        'products': products,
-        'meals': meals,
+        'meals': paginator.get_page(page),
+        'total_count': total_count
     })
 
 
@@ -69,6 +80,7 @@ def _list_editor_view(request, model_cls, form_cls, template_name, url_name):
 
 @login_required
 def product_edit_view(request, id=None):
+    products = Product.objects.filter(user=request.user)
     product = None
     if id is None:
         product = Product.objects.get(id=id)
@@ -79,8 +91,8 @@ def product_edit_view(request, id=None):
                                  instance=product)
         if form.is_valid():
             form.save()
-            return redirect("main")
-    return render(request, "web/product_form.html", {"form": form})
+            return redirect("product_add")
+    return render(request, "web/product_form.html", {"products": products, "form": form})
 
 
 @login_required

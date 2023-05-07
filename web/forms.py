@@ -45,3 +45,9 @@ class MealsCreateForm(forms.ModelForm):
     class Meta:
         model: Meal
         fields = ('time', 'name', 'user', 'products')
+
+
+class MealFilterForm(forms.Form):
+    search = forms.CharField(label='', widget=forms.TextInput(attrs={"placeholder": "Поиск"}), required=False)
+
+
