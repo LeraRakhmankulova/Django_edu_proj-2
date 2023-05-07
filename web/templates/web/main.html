@@ -5,10 +5,12 @@
         <b>Фильтры:</b><br>
 
         {% for field in filter_form %}
+            {{ field.label }}
             {{ field }}
         {% endfor %}
 
         <button>Найти</button>
+        <a href="?">Очистить всё</a>
     </form>
 
     <hr>
@@ -16,7 +18,7 @@
     <ul>
         {% for meal in meals %}
             <li>
-                <b>{{ meal.time }}</b>
+                <b>{{ meal.date }}</b>
                 <span>{{ meal.name }}</span>
                 <small><a href="{% url 'meal_delete' meal.id %}">Удалить</a></small>
             </li>

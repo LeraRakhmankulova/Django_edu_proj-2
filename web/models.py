@@ -19,7 +19,7 @@ class Product(models.Model):
 
 
 class Meal(models.Model):
-    time = models.TimeField(verbose_name="Время")
+    date = models.DateTimeField(verbose_name='Время', null=True, blank=True)
     name = models.CharField(max_length=256, verbose_name="Название")
     products = models.ManyToManyField(Product, verbose_name="Продукты")
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name='Пользователь')
