@@ -9,12 +9,11 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -26,7 +25,6 @@ SECRET_KEY = 'django-insecure-^wtj#ob^!8qk##y*_59&rfx1jl@8toq&zf3re+e1!k00*a&oo#
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -48,7 +46,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'foodcalculate.middlewares.SqlPrintingMiddleware'
+    'foodcalculate.middlewares.SqlPrintingMiddleware',
+    "foodcalculate.middlewares.StatMiddleware"
 ]
 
 ROOT_URLCONF = 'foodcalculate.urls'
@@ -71,7 +70,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodcalculate.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -85,7 +83,19 @@ DATABASES = {
         'PORT': 5432
     }
 }
+REDIS_HOST = os.environ.get("REDIS_HOST", "127.0.0.1")
+REDIS_DB = os.environ.get("REDIS_DB", 0)
+REDIS_PORT = 6379
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -105,7 +115,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -116,7 +125,6 @@ TIME_ZONE = "Europe/Moscow"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -133,4 +141,3 @@ MEDIA_URL = "media/"
 
 LOGIN_URL = 'auth'
 LOGIN_REDIRECT_URL = 'main'
-

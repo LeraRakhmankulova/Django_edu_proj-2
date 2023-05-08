@@ -1,5 +1,6 @@
 import csv
 
+from foodcalculate.redis import get_redis_client
 from web.models import Meal, Product
 
 
@@ -53,3 +54,12 @@ def import_meals_from_csv(file, user_id):
                 Meal.products.through(meal_id=meal.id, mealproducts_id=product_id)
             )
     Meal.products.through.objects.bulk_create(meal_products)
+
+
+def get_stat():
+    redis = get_redis_client()
+    keys = redis.keys("stat_*")
+    return [
+        (key.decode().replace("stat_", ""), redis.get(key).decode())
+        for key in keys
+    ]
