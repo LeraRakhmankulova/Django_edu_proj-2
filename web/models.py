@@ -17,6 +17,10 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = 'продукт'
+        verbose_name_plural = 'продукты'
+
 
 class Meal(models.Model):
     date = models.DateTimeField(verbose_name='Время', null=True, blank=True)
