@@ -5,14 +5,16 @@ from django.db.models import Count, Max, Min
 from django.db.models.functions import TruncDate
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.cache import cache_page
 
 from web.forms import RegistrationForm, AuthForm, ProductCreateForm, MealsCreateForm, MealFilterForm, ImportForm
 from web.models import Product, Meal
-from web.services import filter_meals, export_meals_csv, import_meals_from_csv
+from web.services import filter_meals, export_meals_csv, import_meals_from_csv, get_stat
 
 User = get_user_model()
 
 
+@cache_page(60)
 @login_required
 def main_view(request):
     meals = Meal.objects.filter(user=request.user)
@@ -39,6 +41,11 @@ def main_view(request):
         'meals': paginator.get_page(page),
         'total_count': total_count
     })
+
+
+@login_required
+def stat_view(request):
+    return render(request, "web/stat.html", {"results": get_stat()})
 
 
 @login_required
