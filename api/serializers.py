@@ -25,11 +25,6 @@ class MealSerializer(serializers.ModelSerializer):
     products = ProductSerializer(many=True, read_only=True)
     product_ids = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), many=True, write_only=True)
 
-    def validate(self, attrs):
-        if attrs['end_date'] < attrs['start_date']:
-            raise ValidationError("Incorrect dates")
-        return attrs
-
     def save(self, **kwargs):
         products = self.validated_data.pop("product_ids")
         self.validated_data['user_id'] = self.context['request'].user.id
